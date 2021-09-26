@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS ingreso;
+DROP TABLE IF EXISTS transferencia;
+DROP TABLE IF EXISTS cuenta;
