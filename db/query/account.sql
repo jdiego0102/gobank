@@ -11,6 +11,11 @@ INSERT INTO cuenta (
 SELECT * FROM cuenta
 WHERE id = $1 LIMIT 1;
 
+-- name: GetAccountForUpdate :one
+SELECT * FROM cuenta
+WHERE id = $1 LIMIT 1
+FOR NO KEY UPDATE;
+
 -- name: ListAccounts :many
 SELECT * FROM cuenta
 ORDER BY id
@@ -20,6 +25,12 @@ OFFSET $2;
 -- name: UpdateAccount :one
 UPDATE cuenta SET tope = $2
 WHERE id = $1
+RETURNING *;
+
+-- name: AddAccountBalance :one
+UPDATE cuenta 
+SET tope = tope + sqlc.arg(monto)
+WHERE id = sqlc.arg(id)
 RETURNING *;
 
 -- name: DeleteAccount :exec
