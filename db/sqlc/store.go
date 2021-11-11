@@ -46,16 +46,16 @@ func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) erro
 type TransferTxParams struct {
 	FromCuentaID int64 `json:"from_cuenta_id"`
 	ToCuentaID   int64 `json:"to_cuenta_id"`
-	Amount       int64 `json:"amount"`
+	Amount       int64 `json:"monto"`
 }
 
 // TransferTxResult es el resultado de la transacción de la transferencia
 type TransferTxResult struct {
 	Transfer    Transferencium `json:"transfer"`
-	FromAccount Cuentum        `json:"from_account`
-	ToAccount   Cuentum        `json:"to_account`
-	FromEntry   Ingreso        `json:"from_entry`
-	ToEntry     Ingreso        `json:"to_entry`
+	FromAccount Cuentum        `json:"from_account"`
+	ToAccount   Cuentum        `json:"to_account"`
+	FromEntry   Ingreso        `json:"from_entry"`
+	ToEntry     Ingreso        `json:"to_entry"`
 }
 
 // TransferTx crea un registro de transferencia, agrega ingresos de cuenta
@@ -97,7 +97,7 @@ func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Tr
 			result.ToAccount, result.FromAccount, err = addMoney(ctx, q, arg.ToCuentaID, arg.Amount, arg.FromCuentaID, -arg.Amount)
 		}
 
-		return nil
+		return err
 	})
 
 	return result, err

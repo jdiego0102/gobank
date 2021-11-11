@@ -40,7 +40,7 @@ func RandomMoney() int64 {
 
 // RandomCurrency genera un código de cambio de divisas aleatorio.
 func RandomCurrency() string {
-	currencies := []string{"COP", "USD", "EUR"}
+	currencies := []string{COP, USD, EUR}
 	n := len(currencies)
 	return currencies[rand.Intn(n)]
 }
