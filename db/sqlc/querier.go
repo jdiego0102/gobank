@@ -11,7 +11,9 @@ type Querier interface {
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Cuentum, error)
 	CreateEntry(ctx context.Context, arg CreateEntryParams) (Ingreso, error)
 	CreateTransfer(ctx context.Context, arg CreateTransferParams) (Transferencium, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteAccount(ctx context.Context, id int64) error
+	GetAUser(ctx context.Context, username string) (User, error)
 	GetAccount(ctx context.Context, id int64) (Cuentum, error)
 	GetAccountForUpdate(ctx context.Context, id int64) (Cuentum, error)
 	GetEntry(ctx context.Context, id int64) (Ingreso, error)

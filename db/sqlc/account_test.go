@@ -11,8 +11,10 @@ import (
 )
 
 func createRandomAccount(t *testing.T) Cuentum {
+	user := createRandomUser(t)
+
 	arg := CreateAccountParams{
-		Propietario: util.RandomOwner(),
+		Propietario: user.Username,
 		Tope:        util.RandomMoney(),
 		Divisa:      util.RandomCurrency(),
 	}
