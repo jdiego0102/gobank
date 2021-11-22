@@ -182,7 +182,7 @@ func TestCreateUserAPI(t *testing.T) {
 			tc.buildStubs(store)
 
 			// Iniciar el servidor de prueba y enviar solicitud.
-			server := NewTestServer(t, store)
+			server := newTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			// Convertir datos a JSON

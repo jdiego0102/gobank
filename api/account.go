@@ -2,16 +2,17 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/jdiego0102/gobank/db/sqlc"
+	"github.com/jdiego0102/gobank/token"
 	"github.com/lib/pq"
 )
 
 type createAccountRequest struct {
-	Propietario string `json:"propietario" binding:"required"`
-	Divisa      string `json:"divisa" binding:"required,currency"`
+	Divisa string `json:"divisa" binding:"required,currency"`
 }
 
 func (server *Server) createAccount(ctx *gin.Context) {
@@ -21,8 +22,9 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	arg := db.CreateAccountParams{
-		Propietario: req.Propietario,
+		Propietario: authPayload.Username,
 		Divisa:      req.Divisa,
 		Tope:        0,
 	}
@@ -65,6 +67,13 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if account.Propietario != authPayload.Username {
+		err := errors.New("cuenta no pertenece al usuario autenticado ")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+
 	ctx.JSON(http.StatusOK, account)
 }
 
@@ -80,9 +89,12 @@ func (server *Server) listAccount(ctx *gin.Context) {
 		return
 	}
 
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+
 	arg := db.ListAccountsParams{
-		Limit:  req.PageSize,
-		Offset: (req.PageID - 1) * req.PageSize,
+		Propietario: authPayload.Username,
+		Limit:       req.PageSize,
+		Offset:      (req.PageID - 1) * req.PageSize,
 	}
 
 	accounts, err := server.store.ListAccounts(ctx, arg)
